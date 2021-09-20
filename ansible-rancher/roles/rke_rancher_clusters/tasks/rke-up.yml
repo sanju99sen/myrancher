@@ -1,0 +1,51 @@
+---
+
+- name: "RUN rke up"
+  command: "/usr/local/bin/rke up --config {{ rke_cluster_config }}"
+  register: rke_up_result
+  changed_when: false
+
+- name: "rke up Result"
+  debug:
+    msg: "{{ rke_up_result.stdout }}"
+  when: rke_up_result is not skipped
+
+#- name: "RUN rke up"
+#  shell: |
+#     set -o pipefail
+#     "/usr/local/bin/rke up --config {{ rke_cluster_config }} | tee rke-up.log"
+#  args:
+#    executable: /bin/bash
+#  changed_when: false
+
+#- name: Verify cluster status
+#  lineinfile:
+#          path: "./rake-up.log"
+#          regexp: 'Finished building Kubernetes cluster successfully'
+#          state: absent
+#          check_mode: True
+#          register: rke_up_successfully
+#          changed_when: false
+#          failed_when: rke_up_successfully is failed or not rke_up_successfully.found
+
+
+- name: Check that KubeConfig exists
+  stat:
+    path: "{{ rke_cluster_kube_config }}"
+  register: kubeconfig_result
+
+- name: Ensure $HOME/.kube exists
+  file:
+    path: ~/.kube
+    state: directory
+    mode: '0755'
+  run_once: True
+
+- name: Copy kubeconfig to default location
+  copy:
+     remote_src: no
+     src: "{{ rke_cluster_kube_config }}"
+     dest: ~/.kube/config
+     mode: '0644'
+
+

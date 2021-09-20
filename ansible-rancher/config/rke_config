@@ -1,0 +1,14 @@
+##### This file contains the configurations for RKE cluster ####
+ip1=192.168.29.101
+ip2=2.2.2.2
+ip3=3.3.3.3
+ssh_user=root
+cni=calico
+servive_cidr=10.1.0.0/16
+pod_cidr=172.168.0.0/16
+cluster_dns_svc_ip=10.1.1.99
+cluster_domain=tcs.org
+kubernetes_img=rancher/hyperkube:v1.20.10-rancher1
+master_node1=controlplane03
+master_node2=controlplane2
+master_node3=controlplane3

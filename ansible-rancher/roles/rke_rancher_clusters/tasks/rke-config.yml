@@ -1,0 +1,13 @@
+---
+
+- name: Create RKE Config
+  shell:
+     cmd: sh generate_config.sh
+
+- name: Rename expect module generated cluster.config into ansible variable set name
+  copy:
+     src: "./cluster.yml"
+     dest: "{{ rke_cluster_config }}"
+     mode: '0755'
+  changed_when: false
+

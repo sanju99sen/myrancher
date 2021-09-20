@@ -1,0 +1,11 @@
+[Unit]
+Description= docker daemon
+Wants=syslog.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/dockerd   
+
+[Install]
+WantedBy=multi-user.target
+

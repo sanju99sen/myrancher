@@ -1,0 +1,51 @@
+---
+
+- name: Retrieve docker binary archive
+  unarchive:
+    src: "{{ docker_url }}"
+    dest: "./"
+    remote_src: yes
+  changed_when: false
+  check_mode: no
+
+- name: Move docker binary into place
+  copy:
+    src: "./docker/{{ item }}"
+    dest: "{{ docker_dest }}"
+    remote_src: yes
+    mode: '0755'
+  loop:
+    - runc
+    - docker-proxy
+    - docker-init
+    - dockerd
+    - docker
+    - ctr
+    - containerd-shim
+    - containerd
+  changed_when: false
+
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: /etc/docker
+    state: directory
+    mode: '0755'
+
+- name: copy docker overlay2 config file to /etc/docker directory
+  copy:
+    src: "./daemon.json"
+    dest: "/etc/docker/"
+    mode: '0755'
+
+- name: copy docker.service file
+  copy:
+     src: "./docker.service"
+     dest: "/etc/systemd/system"
+     mode: '0755'
+
+- name: start docker service
+  systemd: 
+       name: docker
+       state: started
+      
+
